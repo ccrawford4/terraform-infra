@@ -10,7 +10,7 @@ packer {
 source "amazon-ebs" "amazon-linux" {
   ami_name      = var.ami_name
   instance_type = var.instance_type
-  region        = var.ami_region
+  region        = var.aws_region
   source_ami_filter {
     filters = {
       architecture = "arm64",
@@ -19,7 +19,8 @@ source "amazon-ebs" "amazon-linux" {
     most_recent = true
     owners = ["amazon"]
   }
-  ssh_username = "ec2-user"
+  ssh_username = var.ssh_username
+  ssh_keypair_name = var.ssh_keypair_name
 }
 
 build {
@@ -46,6 +47,10 @@ variable "instance_type" {
   type = string
 }
 
-variable "ami_region" {
+variable "ssh_username" {
+  type = string
+}
+
+variable "ssh_keypair_name" {
   type = string
 }

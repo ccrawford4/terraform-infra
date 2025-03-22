@@ -2,14 +2,12 @@ variable "aws_region" {
   type = string
 }
 
-
-# ------------ EC2 + AMI Variables --------------
 variable "ami_name" {
   type = string
 }
 
 variable "instance_type" {
-  type = string
+  type = string 
 }
 
 variable "ssh_username" {
