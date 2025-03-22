@@ -3,7 +3,7 @@ variable "aws_region" {
 }
 
 
-# ------------ EC2 + AMI Variables --------------
+# ------------ EC2 + Packer --------------
 variable "ami_name" {
   type = string
 }
@@ -18,4 +18,21 @@ variable "ssh_username" {
 
 variable "ssh_keypair_name" {
   type = string
+}
+
+# ------------ VPC -------------------
+variable "vpc_cidr_block" {
+  type = string    
+}
+
+variable "subnet_count" {
+  type = map(number) 
+}
+
+variable "public_subnet_cidr_blocks" {
+  type = list(string)
+}
+
+variable "private_subnet_cidr_blocks" {
+  type = list(string)
 }
