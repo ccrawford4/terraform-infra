@@ -8,15 +8,16 @@ packer {
 }
 
 source "amazon-ebs" "amazon-linux" {
-  ami_name      = "oneflow-dev-custom-ami"
-  instance_type = "t2.micro"
-  region        = "us-east-1"
+  ami_name      = var.ami_name
+  instance_type = var.instance_type
+  region        = var.ami_region
   source_ami_filter {
     filters = {
-      virtuliaziation-type = "hvm",
       architecture = "arm64",
-      name = "*amzn2-ami-hvn-*",
-    } 
+      name         = "*amzn2-ami-hvm-*"
+    }
+    most_recent = true
+    owners = ["amazon"]
   }
   ssh_username = "ec2-user"
 }
@@ -37,3 +38,14 @@ build {
   }
 }
 
+variable "ami_name" {
+  type = string
+}
+
+variable "instance_type" {
+  type = string
+}
+
+variable "ami_region" {
+  type = string
+}
