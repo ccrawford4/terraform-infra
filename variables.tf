@@ -20,6 +20,10 @@ variable "ssh_keypair_name" {
   type = string
 }
 
+variable "instance_count" {
+  type = string
+}
+
 # ------------ VPC -------------------
 variable "vpc_cidr_block" {
   type = string    

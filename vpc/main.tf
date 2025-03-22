@@ -10,7 +10,7 @@ data "aws_availability_zones" "available" {
 # Create the VPC
 resource "aws_vpc" "oneflow_vpc" {
   cidr_block = var.vpc_cidr_block
-  enable_dns_hostnames = true
+  enable_dns_hostnames = true 
 }
 
 # Create an Internet Gateway

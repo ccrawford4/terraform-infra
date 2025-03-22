@@ -35,6 +35,7 @@ resource "local_file" "public_key" {
 resource "null_resource" "packer" {
   triggers = {
     packer_file = sha1(file("${path.module}/build.pkr.hcl"))
+    public_key = tls_private_key.ec2_ssh_key.public_key_openssh
   }
   
   provisioner "local-exec" {

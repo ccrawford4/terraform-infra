@@ -18,3 +18,20 @@ variable "ssh_username" {
 variable "ssh_keypair_name" {
   type = string
 }
+
+# ------- EC2 Instance -----
+variable "vpc_id" {
+  type = string    
+}
+
+variable "public_subnet_id" {
+  type = string
+}
+
+variable "private_subnet_id" {
+  type = string    
+}
+
+variable "instance_count" {
+  type = number    
+}
