@@ -18,5 +18,6 @@ module "ec2" {
   public_subnet_id = module.vpc.public_subnet_id
   private_subnet_id = module.vpc.private_subnet_id
   instance_count = var.instance_count
+  admin_ip_addr = var.admin_ip_addr
 }
 

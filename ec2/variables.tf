@@ -35,3 +35,7 @@ variable "private_subnet_id" {
 variable "instance_count" {
   type = number    
 }
+
+variable "admin_ip_addr" {
+  type = string
+}

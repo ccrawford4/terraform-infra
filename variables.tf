@@ -24,6 +24,10 @@ variable "instance_count" {
   type = string
 }
 
+variable "admin_ip_addr" {
+  type = string
+}
+
 # ------------ VPC -------------------
 variable "vpc_cidr_block" {
   type = string    
