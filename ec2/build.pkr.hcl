@@ -20,7 +20,6 @@ source "amazon-ebs" "amazon-linux" {
     owners = ["amazon"]
   }
   ssh_username = var.ssh_username
-  ssh_keypair_name = var.ssh_keypair_name
 }
 
 build {
@@ -29,14 +28,28 @@ build {
     "source.amazon-ebs.amazon-linux"
   ]
 
+  provisioner "file" {
+    source = var.ssh_public_key_file
+    destination = "/tmp/imported_key.pub"
+  }
+
   provisioner "shell" {
     inline = [
       "sudo yum update -y",
       "sudo amazon-linux-extras install docker",
       "sudo yum install -y docker",
-      "sudo usermod -a -G docker ec2-user"
+      "sudo usermod -a -G docker ec2-user",
+
+      # Add public key to authorized keys
+      "cat /tmp/imported_key.pub >> ~/.ssh/authorized_keys",
+      "chmod 700 ~/.ssh",
+      "rm /tmp/imported_key.pub"
     ]
   }
+}
+
+variable "aws_region" {
+  type = string
 }
 
 variable "ami_name" {
@@ -52,5 +65,9 @@ variable "ssh_username" {
 }
 
 variable "ssh_keypair_name" {
+  type = string
+}
+
+variable "ssh_public_key_file" {
   type = string
 }

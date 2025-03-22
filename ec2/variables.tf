@@ -2,6 +2,7 @@ variable "aws_region" {
   type = string
 }
 
+# ------- Packer ---------
 variable "ami_name" {
   type = string
 }
