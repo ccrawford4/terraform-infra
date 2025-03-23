@@ -1,5 +1,5 @@
-output "ec2_dns_endpoint" {
-  value = aws_instance.bastion.public_dns
+output "bastion_host_public_ip" {
+  value = aws_instance.bastion.public_ip
 }
 
 output "ec2_private_ip" {
