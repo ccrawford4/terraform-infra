@@ -5,6 +5,9 @@
 *.pub
 *.pem
 
+# Secrets
+*.tfvars
+
 .terraform.lock.hcl
 
 # .tfstate files
