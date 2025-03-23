@@ -65,3 +65,22 @@ terraform apply
 ```
 
 ## Testing
+From the `terraform apply` step you should see an output like so:
+<img width="590" alt="Screenshot 2025-03-23 at 1 53 11 PM" src="https://github.com/user-attachments/assets/49707bff-77bc-405a-a6fd-f40be3079fd9" />
+1. Copy the `bastion_public_ip` output and run the following
+```bash
+ssh -i ec2/ec2-keypair.pem ec2-user@<bastion host public ip>
+```
+You will be asked if you want to continue connecting `(yes/no/[fingerpring])?` type `yes` and then you should see this output:
+<img width="747" alt="Screenshot 2025-03-23 at 1 56 50 PM" src="https://github.com/user-attachments/assets/89f219e5-0a24-41ca-8110-8da65f4ea8d2" />
+`
+2. Test that docker has been installed
+```bash
+docker -v
+```
+3. Exit the terminal and return to your host machine shell. Now you can test using your bastion host as a proxy to ssh into the private ec2. Copy one of the private IP addresses from the `terrafrom apply` output and then run the following
+```bash
+ssh -o "ProxyCommand=ssh -i ec2/ec2-keypair.pem ec2-user@<public ip> -W %h:%p" -i ec2/ec2-keypair.pem ec2-user@<private ip>
+```
+You should now be in a shell that has the prompt `ec2-user@ip-<private ip address>`
+4. Run `docker -v` to confirm that docker is also installed on the private ec2 instances
