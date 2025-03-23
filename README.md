@@ -7,7 +7,7 @@ This Terraform module provisions a secure AWS environment with the following com
   * Within the VPC in public subnet
   * SSH (22) ingress traffic from client IP address only
   * Unrestricted egress traffic
-* **Private Server (EC2 Instance)**
+* **Private Servers (EC2 Instance)**
   * Within VPC in private subnet
   * Configure number of instances created using the `instance_count` variable
   * SSH (22) ingress traffic from bastion host IP address only
@@ -22,15 +22,15 @@ This Terraform module provisions a secure AWS environment with the following com
 1. Clone the repository
    ```bash
    # Using HTTPS
-   git clone https://github.com/ccrawford4/oneflow-infra.git
+   git clone https://github.com/ccrawford4/terraform-infra.git 
    
    # Or using SSH
-   git clone git@github.com:ccrawford4/oneflow-infra.git
+   git clone git@github.com:ccrawford4/terraform-infra.git
    ```
 
 2. Navigate to the repository directory
    ```bash
-   cd oneflow-infra
+   cd terraform-infra
    ```
 
 ## Environment Configuration
@@ -40,14 +40,9 @@ This Terraform module provisions a secure AWS environment with the following com
    cp secrets.auto.tfvars.example secrets.auto.tfvars
    ```
 
-2. Edit the `secrets.auto.tfvars` file with your configuration values:
+2. Edit the `secrets.auto.tfvars` file to include your host machines IP address:
    ```terraform
-   environment = "<environment name>"  # dev or prod
-   aws_account_id = "<aws account id>"
-   db_username = "<database username>"
-   db_password = "<database password>"
-   db_name = "<database name>"
-   db_port = <database port>
+   admin_ip_addr = "<your IP address>" 
    ```
 
 3. Configure AWS CLI with your AWS credentials
