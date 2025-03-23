@@ -67,7 +67,7 @@ terraform apply
 ## Testing
 From the `terraform apply` step you should see an output like so:
 <img width="590" alt="Screenshot 2025-03-23 at 1 53 11 PM" src="https://github.com/user-attachments/assets/49707bff-77bc-405a-a6fd-f40be3079fd9" />
-1. Copy the `bastion_public_ip` output and run the following
+1. Copy the `bastion_host_public_ip` output and run the following
 ```bash
 ssh -i ec2/ec2-keypair.pem ec2-user@<bastion host public ip>
 ```
