@@ -65,8 +65,6 @@ After deployment, you'll see output similar to:
 
 <img width="590" alt="Screenshot 2025-03-23 at 1 53 11 PM" src="https://github.com/user-attachments/assets/49707bff-77bc-405a-a6fd-f40be3079fd9" />
 
-![Terraform output showing IP addresses](https://github.com/user-attachments/assets/49707bff-77bc-405a-a6fd-f40be3079fd9)
-
 ### Connect to Bastion Host
 
 ```bash
@@ -76,8 +74,6 @@ ssh -i ec2/ec2-keypair.pem ec2-user@<bastion_host_public_ip>
 When prompted with `(yes/no/[fingerprint])?`, type `yes`. You should see:
 
 <img width="747" alt="Screenshot 2025-03-23 at 1 56 50 PM" src="https://github.com/user-attachments/assets/89f219e5-0a24-41ca-8110-8da65f4ea8d2" />
-
-![SSH connection to bastion host](https://github.com/user-attachments/assets/89f219e5-0a24-41ca-8110-8da65f4ea8d2)
 
 Verify Docker installation:
 ```bash
