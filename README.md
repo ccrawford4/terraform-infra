@@ -63,7 +63,7 @@ terraform apply
 
 After deployment, you'll see output similar to:
 
-<img width="590" alt="Screenshot 2025-03-23 at 1 53 11 PM" src="https://github.com/user-attachments/assets/49707bff-77bc-405a-a6fd-f40be3079fd9" />
+<img width="618" alt="Screenshot 2025-03-23 at 9 07 42 PM" src="https://github.com/user-attachments/assets/923586dd-5777-41e1-aa00-059d1d10ba87" />
 
 ### Connect to Bastion Host
 
