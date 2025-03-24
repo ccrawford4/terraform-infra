@@ -68,7 +68,7 @@ After deployment, you'll see output similar to:
 ### Connect to Bastion Host
 
 ```bash
-ssh -i ec2/ec2-keypair.pem ec2-user@<bastion_host_public_ip>
+ssh -i ec2/<private_key> ec2-user@<bastion_host_public_ip>
 ```
 
 When prompted with `(yes/no/[fingerprint])?`, type `yes`. You should see:
