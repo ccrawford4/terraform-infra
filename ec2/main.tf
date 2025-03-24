@@ -10,6 +10,7 @@ resource "random_string" "random" {
 
 locals {
   unique_ami_name = "${var.ami_name}-${random_string.random.id}"
+  unique_key_name = "${var.ssh_keypair_name}-${random_string.random.id}"
 }
 
 # Generate private key
@@ -21,19 +22,19 @@ resource "tls_private_key" "ec2_ssh_key" {
 # Save private key to file
 resource "local_file" "private_key" {
   content = tls_private_key.ec2_ssh_key.private_key_pem
-  filename = "${path.module}/${var.ssh_keypair_name}.pem"
+  filename = "${path.module}/${local.unique_key_name}.pem"
   file_permission = "0600"
 }
 
 # Export public key to file for Packer
 resource "local_file" "public_key" {
   content = tls_private_key.ec2_ssh_key.public_key_openssh
-  filename = "${path.module}/${var.ssh_keypair_name}.pub"
+  filename = "${path.module}/${local.unique_key_name}.pub"
 }
 
 # Export the public key to EC2
 resource "aws_key_pair" "generated_key" {
-  key_name = var.ssh_keypair_name
+  key_name = local.unique_key_name
   public_key = tls_private_key.ec2_ssh_key.public_key_openssh
 }
 
@@ -53,8 +54,8 @@ packer build \
 -var "ami_name=${local.unique_ami_name}" \
 -var "instance_type=${var.instance_type}" \
 -var "ssh_username=${var.ssh_username}" \
--var "ssh_keypair_name=${var.ssh_keypair_name}" \
--var "ssh_public_key_file=${var.ssh_keypair_name}.pub" \
+-var "ssh_keypair_name=${local.unique_key_name}" \
+-var "ssh_public_key_file=${local.unique_key_name}.pub" \
 build.pkr.hcl
 EOT
   }
