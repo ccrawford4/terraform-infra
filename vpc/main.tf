@@ -15,7 +15,7 @@ resource "aws_vpc" "vpc" {
 
 # Create an Internet Gateway
 resource "aws_internet_gateway" "igw" {
-  vpc_id = aws.vpc.vpc.id
+  vpc_id = aws_vpc.vpc.id
 }
 
 # Create a public subnet
@@ -28,7 +28,7 @@ resource "aws_subnet" "public_subnet" {
 }
 
 # Create the private subnet
-resource "aws_subnet" "_private_subnet" {
+resource "aws_subnet" "private_subnet" {
   count = var.subnet_count.private
   vpc_id = aws_vpc.vpc.id
   cidr_block = var.private_subnet_cidr_blocks[count.index]
@@ -36,16 +36,16 @@ resource "aws_subnet" "_private_subnet" {
 }
 
 # Create a public route table
-resource "aws_route_table" "_public_rt" {
+resource "aws_route_table" "public_rt" {
   vpc_id = aws_vpc.vpc.id
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway._igw.id
+    gateway_id = aws_internet_gateway.igw.id
   }
 }
 
 # Create the private route table
-resource "aws_route_table" "_private_rt" {
+resource "aws_route_table" "private_rt" {
   vpc_id = aws_vpc.vpc.id
 }
 
