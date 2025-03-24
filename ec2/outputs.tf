@@ -7,5 +7,5 @@ output "ec2_private_ip" {
 }
 
 output "private_key" {
-  value = '${local.unique_key_name}.pem"
+  value = "${local.unique_key_name}.pem"
 }
