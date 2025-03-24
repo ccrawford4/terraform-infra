@@ -85,7 +85,7 @@ docker -v
 From your local machine:
 
 ```bash
-ssh -o "ProxyCommand=ssh -i ec2/ec2-keypair.pem ec2-user@<public_ip> -W %h:%p" -i ec2/ec2-keypair.pem ec2-user@<private_ip>
+ssh -o "ProxyCommand=ssh -i ec2/<private_key> ec2-user@<public_ip> -W %h:%p" -i ec2/<private_key> ec2-user@<private_ip>
 ```
 
 You should now be in a shell with the prompt `ec2-user@ip-<private_ip_address>`.
