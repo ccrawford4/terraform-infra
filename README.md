@@ -40,7 +40,7 @@ cp secrets.auto.tfvars.example secrets.auto.tfvars
 
 # Edit the file to add your IP address
 # Replace <your IP address> with your actual IP
-nano secrets.auto.tfvars
+vi secrets.auto.tfvars
 
 # Set up AWS credentials
 aws configure
