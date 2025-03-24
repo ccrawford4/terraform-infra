@@ -94,3 +94,9 @@ Verify Docker installation:
 ```bash
 docker -v
 ```
+
+## Deprovisioning
+To remove AWS resources when finished, execute the following command
+```bash
+terraform destroy
+```
