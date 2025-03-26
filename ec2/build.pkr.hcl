@@ -11,10 +11,11 @@ source "amazon-ebs" "amazon-linux" {
   ami_name      = var.ami_name
   instance_type = var.instance_type
   region        = var.aws_region
-  source_ami_filter {
+  source_ami_filter { 
     filters = {
-      architecture = "arm64",
-      name         = "*amzn2-ami-hvm-*"
+      name                = "ubuntu/images/*ubuntu-jammy-22.04-amd64-server-*"
+      root-device-type    = "ebs"
+      virtualization-type = "hvm"
     }
     most_recent = true
     owners = ["amazon"]
@@ -35,10 +36,13 @@ build {
 
   provisioner "shell" {
     inline = [
-      "sudo yum update -y",
-      "sudo amazon-linux-extras install docker",
-      "sudo yum install -y docker",
-      "sudo usermod -a -G docker ec2-user",
+      "sudo apt update -y",
+      "sudo apt install -y apt-transport-https ca-certificates curl software-properties-common",
+      "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg",
+      "echo \"deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable\" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null",
+      "sudo apt update -y",
+      "sudo apt install -y docker-ce",
+      "sudo usermod -aG docker ${var.ssh_username}",
 
       # Add public key to authorized keys
       "cat /tmp/imported_key.pub >> ~/.ssh/authorized_keys",

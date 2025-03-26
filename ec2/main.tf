@@ -62,16 +62,15 @@ EOT
 }
 
 # Create the bastion host security group
-resource "aws_security_group" "bastion_sg" {
-  name = "bastion-sg"
+resource "aws_security_group" "aws_ec2_security_group" {
+  name = "public-ec2-security-group"
   vpc_id = var.vpc_id
 
-  # Inbound traffic from admin IP address only 
   ingress {
-    from_port = 22
-    to_port = 22
-    protocol = "tcp"
-    cidr_blocks = ["${var.admin_ip_addr}/32"]
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
   
   # Allow all outbound traffic
@@ -101,50 +100,16 @@ data "aws_ami" "instance" {
 }
 
 # Create the Bastion Host
-resource "aws_instance" "bastion" {
+resource "aws_instance" "ec2" {
+  count = 6
   associate_public_ip_address = true
   ami = data.aws_ami.instance.id
   instance_type = var.instance_type
-  vpc_security_group_ids = [aws_security_group.bastion_sg.id]
+  vpc_security_group_ids = [aws_security_group.aws_ec2_security_group.id]
   subnet_id = var.public_subnet_id
   key_name = aws_key_pair.generated_key.key_name
 
   tags = {
     Name = "bastion-host"
-  }
-}
-
-# Create the security group for the private EC2 instances 
-resource "aws_security_group" "private_ec2_sg" {
-  name = "private-ec2-sg"
-  vpc_id = var.vpc_id
-  
-  # Inbound traffic from bastion host IP address only 
-  ingress {
-    from_port = 22
-    to_port = 22
-    protocol = "tcp"
-    cidr_blocks = ["${aws_instance.bastion.private_ip}/32"]
-  }
-  
-  # Allow all outbound traffic
-  egress {
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
-
-# Create the private EC2 instances
-resource "aws_instance" "private_ec2" {
-  count = var.instance_count
-  ami = data.aws_ami.instance.id 
-  instance_type = var.instance_type
-  vpc_security_group_ids = [aws_security_group.private_ec2_sg.id]
-  subnet_id = var.private_subnet_id
-
-  tags = {
-    Name = "private-ec2-${count.index + 1}"
   }
 }
