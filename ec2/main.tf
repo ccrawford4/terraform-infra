@@ -83,7 +83,7 @@ resource "aws_security_group" "bastion_sg" {
   }
 }
 
-# Look up the AMI by name
+# Look up the ansible manager AMI
 data "aws_ami" "manager" {
   depends_on = [null_resource.packer]
   most_recent = true
@@ -100,10 +100,44 @@ data "aws_ami" "manager" {
   }
 }
 
+# Look up the amazon AMI
+data "aws_ami" "amazon" {
+  depends_on = [null_resource.packer]
+  most_recent = true
+  owners = ["self"]
+
+  filter {
+    name = "name"
+    values = ["amazon-${var.ami_name}*"]
+  }
+
+  filter {
+    name = "state"
+    values = ["available"]
+  }
+}
+
+# Look up the ubuntu AMI
+data "aws_ami" "ubuntu" {
+  depends_on = [null_resource.packer]
+  most_recent = true
+  owners = ["self"]
+
+  filter {
+    name = "name"
+    values = ["amazon-${var.ami_name}*"]
+  }
+
+  filter {
+    name = "state"
+    values = ["available"]
+  }
+}
+
 # Create the Bastion Host
 resource "aws_instance" "bastion" {
   associate_public_ip_address = true
-  ami = data.aws_ami.manager.id
+  ami = data.aws_ami.amazon.id
   instance_type = var.instance_type
   vpc_security_group_ids = [aws_security_group.bastion_sg.id]
   subnet_id = var.public_subnet_id
@@ -136,8 +170,34 @@ resource "aws_security_group" "private_ec2_sg" {
   }
 }
 
-# Create the private EC2 instances
-resource "aws_instance" "private_ec2" {
+# Create private ansible amazon instance
+resource "aws_instance" "private_ec2_amazon_ansible" { 
+  ami = data.aws_ami.manager.id 
+  instance_type = var.instance_type
+  vpc_security_group_ids = [aws_security_group.private_ec2_sg.id]
+  subnet_id = var.private_subnet_id
+
+  tags = {
+    Name = "private-ec2-amazon-manager",
+  }
+}
+
+# Create three private amazon instances
+resource "aws_instance" "private_ec2_amazon" {
+  count = 3 
+  ami = data.aws_ami.amazon.id 
+  instance_type = var.instance_type
+  vpc_security_group_ids = [aws_security_group.private_ec2_sg.id]
+  subnet_id = var.private_subnet_id
+
+  tags = {
+    Name = "private-ec2-amazon-${count.index + 1}",
+    OS = "amazon"
+  }
+}
+
+# Create three private ubuntu instances
+resource "aws_instance" "private_ec2_ubuntu" {
   count = var.instance_count
   ami = data.aws_ami.manager.id 
   instance_type = var.instance_type
@@ -145,6 +205,7 @@ resource "aws_instance" "private_ec2" {
   subnet_id = var.private_subnet_id
 
   tags = {
-    Name = "private-ec2-${count.index + 1}"
+    Name = "private-ec2-${count.index + 1}",
+    OS = "ubuntu"
   }
 }
