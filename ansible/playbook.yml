@@ -1,0 +1,119 @@
+---
+- name: Update amazon linux servers
+  hosts: amazon-workers
+  become: yes
+
+  tasks:
+    - name: Check for package updates
+      yum:
+        list: updates
+      register: updates_available
+      changed_when: false
+
+    - name: Display available updates
+      debug:
+        msg: "{{ updates_available.results | length }} updates are available"
+      when: updates_available.results | length > 0
+
+    - name: Update all packages
+      yum:
+        name: '*'
+        state: latest
+      when: updates_available.results | length > 0
+
+    - name: Check current Docker version
+      command: docker version --format '{{{{.Server.Version}}}}'
+      register: current_docker_version
+      changed_when: false
+      ignore_errors: yes
+
+    - name: Check available Docker version in repositories
+      shell: yum list updates | grep docker-ce | awk '{print $2}'
+      register: available_docker_version
+      changed_when: false
+      ignore_errors: yes
+
+    - name: Display Docker version information
+      debug:
+        msg: 
+          - "Current Docker Version: {{ current_docker_version.stdout | default('Not installed') }}"
+          - "Available Update Version: {{ available_docker_version.stdout | default('No updates') }}"
+
+    - name: Update Docker CE package
+      yum:
+        name: 
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        state: latest
+      when: 
+        - available_docker_version.stdout is defined
+        - available_docker_version.stdout != ''
+        - current_docker_version.stdout != available_docker_version.stdout
+
+    - name: Ensure Docker service is running
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+      when: current_docker_version.rc == 0  # Only start if Docker was previously installed
+
+- name: Update ubuntu servers
+  hosts: ubuntu-workers
+  become: yes
+
+  tasks:
+    - name: Check for package updates 
+      apt:
+        list: updates
+      register: updates_available
+      changed_when: false
+
+    - name: Display available updates
+      debug:
+        msg: "{{ updates_available.results | length }} updates are available"
+      when: updates_available.results | length > 0
+
+    - name: Update all packages
+      yum:
+        name: '*'
+        state: latest
+      when: updates_available.results | length > 0
+
+    - name: Check current Docker version
+      command: docker version --format '{{{{.Server.Version}}}}'
+      register: current_docker_version
+      changed_when: false
+      ignore_errors: yes
+
+    - name: Get available Docker version
+      shell: apt-cache policy docker-ce | grep Candidate | awk '{print $2}'
+      register: available_docker_version
+      changed_when: false
+      ignore_errors: yes
+
+    - name: Display Docker version information
+      debug:
+        msg: 
+          - "Current Docker Version: {{ current_docker_version.stdout | default('Not installed') }}"
+          - "Available Update Version: {{ available_docker_version.stdout | default('No updates') }}"
+
+    - name: Update Docker packages
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        state: latest
+        update_cache: yes
+      when: 
+        - available_docker_version.stdout is defined
+        - available_docker_version.stdout != ''
+        - current_docker_version.stdout != available_docker_version.stdout
+
+    - name: Ensure Docker service is running
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+      when: current_docker_version.rc == 0

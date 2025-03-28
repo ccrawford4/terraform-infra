@@ -198,14 +198,14 @@ resource "aws_instance" "private_ec2_amazon" {
 
 # Create three private ubuntu instances
 resource "aws_instance" "private_ec2_ubuntu" {
-  count = var.instance_count
+  count = 3 
   ami = data.aws_ami.manager.id 
   instance_type = var.instance_type
   vpc_security_group_ids = [aws_security_group.private_ec2_sg.id]
   subnet_id = var.private_subnet_id
 
   tags = {
-    Name = "private-ec2-${count.index + 1}",
+    Name = "private-ec2-ubuntu-${count.index + 1}",
     OS = "ubuntu"
   }
 }

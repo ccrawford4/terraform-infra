@@ -1,0 +1,10 @@
+plugin: aws_ec2
+Regions:
+  - us-east-1
+
+Filters:
+  instance-state-name: running
+
+Keyed_groups:
+  - key: tags.OS
+    prefix: amazon
