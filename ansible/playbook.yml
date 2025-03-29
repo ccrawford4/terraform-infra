@@ -3,6 +3,9 @@
   hosts: aws_amazon
   become: yes
 
+  vars:
+    ansible_python_interpreter: "/usr/bin/python2"
+
   tasks:
     - name: Check for package updates
       yum:
@@ -42,7 +45,8 @@
     - name: Update Docker CE package
       yum:
         name:
-          - docker-ce                                                                                     - docker-ce-cli
+          - docker-ce
+          - docker-ce-cli
           - containerd.io
         state: latest
       when:

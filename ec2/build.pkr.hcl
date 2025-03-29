@@ -67,7 +67,7 @@ build {
   provisioner "shell" {
     only = ["amazon-ebs.amazon"]
     inline = [
-      "sudo yum update -y",
+      # Install and set up docker
       "sudo amazon-linux-extras install docker",
       "sudo yum install -y docker",
       "sudo usermod -a -G docker ec2-user",
