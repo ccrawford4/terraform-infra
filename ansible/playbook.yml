@@ -24,8 +24,13 @@
         state: latest
       when: updates_available.results | length > 0
 
+    - name: Ensure Docker Engine is Running
+      become: yes
+      command: systemctl start docker
+      register: docker_started
+
     - name: Check current Docker version
-      command: docker version --format '{{{{.Server.Version}}}}'
+      command: docker version --format '{{"{{.Server.Version}}"}}'
       register: current_docker_version
       changed_when: false
       ignore_errors: yes
@@ -43,25 +48,17 @@
           - "Available Update Version: {{ available_docker_version.stdout | default('No updates') }}"
 
     - name: Update Docker CE package
-      yum:
-        name:
+      yum:                                                                                                    name:
           - docker-ce
           - docker-ce-cli
-          - containerd.io
-        state: latest
-      when:
-        - available_docker_version.stdout is defined
-        - available_docker_version.stdout != ''
-        - current_docker_version.stdout != available_docker_version.stdout
-
-    - name: Ensure Docker service is running
+          - containerd.io                                                                                     state: latest                                                                                       when:
+        - available_docker_version.stdout is defined                                                          - available_docker_version.stdout != ''
+        - current_docker_version.stdout != available_docker_version.stdout                                - name: Ensure Docker service is running
       systemd:
-        name: docker
-        state: started
+        name: docker                                                                                          state: started
         enabled: yes
       when: current_docker_version.rc == 0  # Only start if Docker was previously installed
-
-- name: Update ubuntu servers
+                                                                                                      - name: Update ubuntu servers
   hosts: aws_ubuntu
   become: yes
 
@@ -81,10 +78,12 @@
       yum:
         name: '*'
         state: latest
-      when: updates_available.results | length > 0
+      when: updates_available.results | length > 0                                                        - name: Ensure Docker Engine is Running
+      command: sudo systemctl start docker
+      register: docker_started
 
     - name: Check current Docker version
-      command: docker version --format '{{{{.Server.Version}}}}'
+      command: docker version --format '{{.Server.Version}}'
       register: current_docker_version
       changed_when: false
       ignore_errors: yes
@@ -99,19 +98,13 @@
       debug:
         msg:
           - "Current Docker Version: {{ current_docker_version.stdout | default('Not installed') }}"
-          - "Available Update Version: {{ available_docker_version.stdout | default('No updates') }}"
-
-    - name: Update Docker packages
-      apt:
-        name:
-          - docker-ce
+          - "Available Update Version: {{ available_docker_version.stdout | default('No updates') }}"                                                                                                           - name: Update Docker packages                                                                          apt:                                                                                                    name:                                                                                                   - docker-ce
           - docker-ce-cli
           - containerd.io
         state: latest
         update_cache: yes
       when:
-        - available_docker_version.stdout is defined
-        - available_docker_version.stdout != ''
+        - available_docker_version.stdout is defined                                                          - available_docker_version.stdout != ''
         - current_docker_version.stdout != available_docker_version.stdout
 
     - name: Ensure Docker service is running
