@@ -1,6 +1,6 @@
 ---
 - name: Update amazon linux servers
-  hosts: amazon-workers
+  hosts: aws_amazon
   become: yes
 
   tasks:
@@ -35,18 +35,17 @@
 
     - name: Display Docker version information
       debug:
-        msg: 
+        msg:
           - "Current Docker Version: {{ current_docker_version.stdout | default('Not installed') }}"
           - "Available Update Version: {{ available_docker_version.stdout | default('No updates') }}"
 
     - name: Update Docker CE package
       yum:
-        name: 
-          - docker-ce
-          - docker-ce-cli
+        name:
+          - docker-ce                                                                                     - docker-ce-cli
           - containerd.io
         state: latest
-      when: 
+      when:
         - available_docker_version.stdout is defined
         - available_docker_version.stdout != ''
         - current_docker_version.stdout != available_docker_version.stdout
@@ -59,11 +58,11 @@
       when: current_docker_version.rc == 0  # Only start if Docker was previously installed
 
 - name: Update ubuntu servers
-  hosts: ubuntu-workers
+  hosts: aws_ubuntu
   become: yes
 
   tasks:
-    - name: Check for package updates 
+    - name: Check for package updates
       apt:
         list: updates
       register: updates_available
@@ -94,7 +93,7 @@
 
     - name: Display Docker version information
       debug:
-        msg: 
+        msg:
           - "Current Docker Version: {{ current_docker_version.stdout | default('Not installed') }}"
           - "Available Update Version: {{ available_docker_version.stdout | default('No updates') }}"
 
@@ -106,7 +105,7 @@
           - containerd.io
         state: latest
         update_cache: yes
-      when: 
+      when:
         - available_docker_version.stdout is defined
         - available_docker_version.stdout != ''
         - current_docker_version.stdout != available_docker_version.stdout

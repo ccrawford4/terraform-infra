@@ -65,7 +65,7 @@ build {
   }
 
   provisioner "shell" {
-    only = ["source.amazon-ebs.amazon"]
+    only = ["amazon-ebs.amazon"]
     inline = [
       "sudo yum update -y",
       "sudo amazon-linux-extras install docker",
@@ -80,7 +80,7 @@ build {
   }
 
   provisioner "shell" {
-    only = ["source.amazon-ebs.ubuntu"]
+    only = ["amazon-ebs.ubuntu"]
     inline = [
       "sudo apt update -y",
       "sudo apt install -y apt-transport-https ca-certificates curl software-properties-common",
@@ -98,17 +98,50 @@ build {
   }
 
   provisioner "shell" {
-    only = ["source.amazon-ebs.manager"]
+    only = ["amazon-ebs.manager"]
     inline = [
-      "sudo yum update -y",
-      "sudo yum install ansible",
+        # Install python3.8
+        "sudo amazon-linux-extras install python3.8 -y",
 
-      # Add public key to authorized keys
-      "cat /tmp/imported_key.pub >> ~/.ssh/authorized_keys",
-      "chmod 700 ~/.ssh",
-      "rm /tmp/imported_key.pub"
+        # Create a virtual env and activate it
+        "python3.8 -m venv .venv",
+        "source .venv/bin/activate",
+
+        # Install ansible and other dependencies
+        "pip install ansible==2.9.23",
+        "pip install boto3 botocore",
+        "ansible-galaxy collection install amazon.aws",
+
+        # Set AWS credentials
+        "export AWS_ACCESS_KEY_ID=${var.aws_access_key_id}",
+        "export AWS_SECRET_ACCESS_KEY=${var.aws_secret_access_key}",
+        "export AWS_SESSION_TOKEN=${var.aws_session_token}",
+
+        # Run the playbook
+        "ansible-playbook -i aws_ec2.yml playbook.yml",
+
+        # Add public key to authorized keys
+        "cat /tmp/imported_key.pub >> ~/.ssh/authorized_keys",
+        "chmod 700 ~/.ssh",
+        "rm /tmp/imported_key.pub"
     ]
   }
+}
+
+variable "aws_access_key_id" {
+  type = string
+  sensitive = true
+}
+
+variable "aws_secret_access_key" {
+  type = string
+  sensitive = true
+}
+
+variable "aws_session_token" {
+  type = string
+  sensitive = true
+  default = ""
 }
 
 variable "aws_region" {
