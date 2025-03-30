@@ -9,7 +9,8 @@ packer {
 
 source "amazon-ebs" "manager" {
   ami_name = "manager-${var.ami_name}"
-  instance_type = var.instance_type
+//  instance_type = var.instance_type
+  instance_type = "t2.micro"
   region        = var.aws_region
   source_ami_filter {
     filters = {
@@ -23,7 +24,8 @@ source "amazon-ebs" "manager" {
 
 source "amazon-ebs" "amazon" {
   ami_name      = "amazon-${var.ami_name}"
-  instance_type = var.instance_type
+  // instance_type = var.instance_type
+  instance_type = "t2.micro"
   region        = var.aws_region
   source_ami_filter {
     filters = {
@@ -35,27 +37,27 @@ source "amazon-ebs" "amazon" {
   ssh_username = "ec2-user"
 }
 
-source "amazon-ebs" "ubuntu" {
-  ami_name = "ubuntu-${var.ami_name}"
-  instance_type = var.instance_type
-  region        = var.aws_region
-  source_ami_filter { 
-    filters = {
-      name                = "ubuntu/images/*ubuntu-jammy-22.04*"
-      root-device-type    = "ebs"
-      virtualization-type = "hvm"
-    }
-    most_recent = true
-    owners = ["amazon"]
-  }
-  ssh_username = "ubuntu"
-}
+# source "amazon-ebs" "ubuntu" {
+#   ami_name = "ubuntu-${var.ami_name}"
+#   instance_type = var.instance_type
+#   region        = var.aws_region
+#   source_ami_filter { 
+#     filters = {
+#       name                = "ubuntu/images/*ubuntu-jammy-22.04*"
+#       root-device-type    = "ebs"
+#       virtualization-type = "hvm"
+#     }
+#     most_recent = true
+#     owners = ["amazon"]
+#   }
+#   ssh_username = "ubuntu"
+# }
 
 build {
   name = "packer"
   sources = [
     "source.amazon-ebs.amazon",
-    "source.amazon-ebs.ubuntu",
+//    "source.amazon-ebs.ubuntu",
     "source.amazon-ebs.manager"
   ]
 
@@ -69,18 +71,18 @@ build {
    ]
   }
 
-  provisioner "shell" {
-    only = ["amazon-ebs.ubuntu"]
-    inline = [
-      "sudo apt update -y",
-      "sudo apt install -y apt-transport-https ca-certificates curl software-properties-common",
-      "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg",
-      "echo \"deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable\" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null",
-      "sudo apt update -y",
-      "sudo apt install -y docker-ce",
-      "sudo usermod -aG docker ubuntu"
-   ]
-  }
+  # provisioner "shell" {
+  #   only = ["amazon-ebs.ubuntu"]
+  #   inline = [
+  #     "sudo apt update -y",
+  #     "sudo apt install -y apt-transport-https ca-certificates curl software-properties-common",
+  #     "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg",
+  #     "echo \"deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable\" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null",
+  #     "sudo apt update -y",
+  #     "sudo apt install -y docker-ce",
+  #     "sudo usermod -aG docker ubuntu"
+  #  ]
+  # }
 
   provisioner "shell" {
     only = ["amazon-ebs.manager"]
@@ -95,15 +97,7 @@ build {
         # Install ansible and other dependencies
         "pip install ansible==2.9.23",
         "pip install boto3 botocore",
-        "ansible-galaxy collection install amazon.aws",
-
-        # Set AWS credentials
-        "export AWS_ACCESS_KEY_ID=${var.aws_access_key_id}",
-        "export AWS_SECRET_ACCESS_KEY=${var.aws_secret_access_key}",
-        "export AWS_SESSION_TOKEN=${var.aws_session_token}",
-
-        # Run the playbook
-        "ansible-playbook -i aws_ec2.yml playbook.yml"
+        "ansible-galaxy collection install amazon.aws"
     ]
   }
 }

@@ -50,6 +50,9 @@ resource "null_resource" "packer" {
     working_dir = path.module
     command     = <<EOT
 packer build \
+-var "aws_access_key_id=${var.aws_access_key_id}" \
+-var "aws_secret_access_key=${var.aws_secret_access_key}" \
+-var "aws_session_token=${var.aws_session_token}" \
 -var "aws_region=${var.aws_region}" \
 -var "ami_name=${local.unique_ami_name}" \
 -var "instance_type=${var.instance_type}" \
