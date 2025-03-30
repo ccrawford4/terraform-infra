@@ -32,6 +32,11 @@ git clone git@github.com:ccrawford4/terraform-infra.git
 cd terraform-infra
 ```
 
+1A. checkout the `assignment10` branch:
+```bash
+git checkout assignment10
+```
+
 ### 2. Configure Environment
 
 ```bash
