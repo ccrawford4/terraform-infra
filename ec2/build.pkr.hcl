@@ -59,24 +59,14 @@ build {
     "source.amazon-ebs.manager"
   ]
 
-  provisioner "file" {
-    source = var.ssh_public_key_file
-    destination = "/tmp/imported_key.pub"
-  }
-
   provisioner "shell" {
     only = ["amazon-ebs.amazon"]
     inline = [
       # Install and set up docker
       "sudo amazon-linux-extras install docker",
       "sudo yum install -y docker",
-      "sudo usermod -a -G docker ec2-user",
-
-      # Add public key to authorized keys
-      "cat /tmp/imported_key.pub >> ~/.ssh/authorized_keys",
-      "chmod 700 ~/.ssh",
-      "rm /tmp/imported_key.pub"
-    ]
+      "sudo usermod -a -G docker ec2-user"
+   ]
   }
 
   provisioner "shell" {
@@ -88,13 +78,8 @@ build {
       "echo \"deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable\" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null",
       "sudo apt update -y",
       "sudo apt install -y docker-ce",
-      "sudo usermod -aG docker ubuntu",
-
-      # Add public key to authorized keys
-      "cat /tmp/imported_key.pub >> ~/.ssh/authorized_keys",
-      "chmod 700 ~/.ssh",
-      "rm /tmp/imported_key.pub"
-    ]
+      "sudo usermod -aG docker ubuntu"
+   ]
   }
 
   provisioner "shell" {
@@ -118,12 +103,7 @@ build {
         "export AWS_SESSION_TOKEN=${var.aws_session_token}",
 
         # Run the playbook
-        "ansible-playbook -i aws_ec2.yml playbook.yml",
-
-        # Add public key to authorized keys
-        "cat /tmp/imported_key.pub >> ~/.ssh/authorized_keys",
-        "chmod 700 ~/.ssh",
-        "rm /tmp/imported_key.pub"
+        "ansible-playbook -i aws_ec2.yml playbook.yml"
     ]
   }
 }

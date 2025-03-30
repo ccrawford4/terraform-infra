@@ -59,41 +59,24 @@ terraform plan
 terraform apply
 ```
 
-## Connecting to Your Instances
+## Connecting to Ansible Manager Instance
 
 After deployment, you'll see output similar to:
 
-<img width="618" alt="Screenshot 2025-03-23 at 9 07 42 PM" src="https://github.com/user-attachments/assets/923586dd-5777-41e1-aa00-059d1d10ba87" />
-
-### Connect to Bastion Host
+### Connect to Ansible Manager EC2
 
 ```bash
-ssh -i ec2/<private_key> ec2-user@<bastion_host_public_ip>
 ```
+./connect.sh <bastion_public_ip> <private_key> <manager_private_ip>
 
 When prompted with `(yes/no/[fingerprint])?`, type `yes`. You should see:
 
-<img width="747" alt="Screenshot 2025-03-23 at 1 56 50 PM" src="https://github.com/user-attachments/assets/89f219e5-0a24-41ca-8110-8da65f4ea8d2" />
+<insert image></insert>
 
-Verify Docker installation:
-```bash
-docker -v
-```
+cd ansible
 
-### Connect to Private Instances
-
-From your local machine:
-
-```bash
-ssh -o "ProxyCommand=ssh -i ec2/<private_key> ec2-user@<public_ip> -W %h:%p" -i ec2/<private_key> ec2-user@<private_ip>
-```
-
-You should now be in a shell with the prompt `ec2-user@ip-<private_ip_address>`.
-
-Verify Docker installation:
-```bash
-docker -v
-```
+Run the following command:
+ansible-playbook -i aws_ec2.yml playbook.yml --private-key ~/private_key.pem
 
 ## Deprovisioning
 To remove AWS resources when finished, execute the following command
