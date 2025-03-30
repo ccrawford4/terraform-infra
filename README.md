@@ -72,7 +72,7 @@ After deployment, you'll see output similar to:
 
 ```bash
 ```
-./connect.sh <bastion_public_ip> <private_key> <manager_private_ip>
+./connect.sh <bastion_host_public_ip> <private_key> <manager_private_ip>
 
 When prompted with `(yes/no/[fingerprint])?`, type `yes`. You should see:
 
