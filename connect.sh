@@ -12,8 +12,11 @@ BASTION_HOST=$1
 PRIVATE_KEY=$2
 TARGET_HOST=$3
 
+# Move the private key to the ansible directory
+mv "ec2/$PRIVATE_KEY" ansible/
+
 # Full path to the private key
-KEY_PATH="ec2/$PRIVATE_KEY"
+KEY_PATH="ansible/$PRIVATE_KEY"
 
 # Validate file paths
 if [ ! -f "$KEY_PATH" ]; then
