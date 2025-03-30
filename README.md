@@ -32,6 +32,11 @@ git clone git@github.com:ccrawford4/terraform-infra.git
 cd terraform-infra
 ```
 
+1A. checkout the `assignment10` branch:
+```bash
+git checkout assignment10
+```
+
 ### 2. Configure Environment
 
 ```bash
@@ -40,6 +45,7 @@ cp secrets.auto.tfvars.example secrets.auto.tfvars
 
 # Edit the file to add your IP address
 # Replace <your IP address> with your actual IP
+# Replace <aws_access_key>, <aws_secret_access_key> and optionally <aws_session_token> with your actual AWS credentials
 vi secrets.auto.tfvars
 
 # Set up AWS credentials
@@ -67,7 +73,7 @@ After deployment, you'll see output similar to:
 
 ```bash
 ```
-./connect.sh <bastion_public_ip> <private_key> <manager_private_ip>
+./connect.sh <bastion_host_public_ip> <private_key> <manager_private_ip>
 
 When prompted with `(yes/no/[fingerprint])?`, type `yes`. You should see:
 
