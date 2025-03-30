@@ -5,6 +5,7 @@
 
   vars:
     ansible_python_interpreter: "/usr/bin/python2"
+    ansible_user: ec2-user
 
   tasks:
     - name: Check for package updates
@@ -71,31 +72,21 @@
 - name: Update ubuntu servers
   hosts: aws_ubuntu
   become: yes
+  vars:
+    ansible_user: ubuntu
 
   tasks:
-    - name: Check for package updates
-      apt:
-        list: updates
-      register: updates_available
-      changed_when: false
-
-    - name: Display available updates
-      debug:
-        msg: "{{ updates_available.results | length }} updates are available"
-      when: updates_available.results | length > 0
-
-    - name: Update all packages
+    - name: Update all packages to their latest version
       apt:
         name: '*'
         state: latest
-      when: updates_available.results | length > 0
 
     - name: Ensure Docker Engine is Running
       command: sudo systemctl start docker
       register: docker_started
 
     - name: Check current Docker version
-      command: docker version --format '{{.Server.Version}}'
+      command: docker version --format '{{"{{.Server.Version}}"}}'
       register: current_docker_version
       changed_when: false
       ignore_errors: yes
