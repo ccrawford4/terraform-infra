@@ -18,6 +18,11 @@ resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.vpc.id
 }
 
+# Create an Elastic IP for NAT Gateway
+resource "aws_eip" "nat_eip" {
+  vpc = true
+}
+
 # Create a public subnet
 resource "aws_subnet" "public_subnet" {
   count = var.subnet_count.public
@@ -25,6 +30,12 @@ resource "aws_subnet" "public_subnet" {
   cidr_block = var.public_subnet_cidr_blocks[count.index]
   availability_zone = data.aws_availability_zones.available.names[count.index]
   map_public_ip_on_launch = true
+}
+
+# Create the NAT Gateway in public subnet
+resource "aws_nat_gateway" "nat" {
+  allocation_id = aws_eip.nat_eip.id
+  subnet_id = aws_subnet.public_subnet.id
 }
 
 # Create the private subnet
@@ -47,6 +58,10 @@ resource "aws_route_table" "public_rt" {
 # Create the private route table
 resource "aws_route_table" "private_rt" {
   vpc_id = aws_vpc.vpc.id
+  route {
+    cidr_block = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat.id
+  }
 }
 
 # Associate the public route table with the public subnets

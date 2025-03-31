@@ -51,6 +51,9 @@ resource "null_resource" "packer" {
     command     = <<EOT
 packer build \
 -var "aws_region=${var.aws_region}" \
+-var "aws_access_key_id=${var.aws_access_key_id}" \
+-var "aws_secret_access_key=${var.aws_secret_access_key}" \
+-var "aws_session_token=${var.aws_session_token}" \
 -var "ami_name=${local.unique_ami_name}" \
 -var "instance_type=${var.instance_type}" \
 -var "ssh_username=${var.ssh_username}" \
