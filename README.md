@@ -79,10 +79,14 @@ When prompted with `(yes/no/[fingerprint])?`, type `yes`. You should see:
 
 <insert image></insert>
 
+```bash
+source .venv/bin/activate
+```
+
 cd ansible
 
 Run the following command:
-ansible-playbook -i aws_ec2.yml playbook.yml --private-key ~/private_key.pem
+ansible-playbook -i aws_ec2.yml playbook.yml --private-key <private_key>
 
 ## Deprovisioning
 To remove AWS resources when finished, execute the following command
