@@ -1,17 +1,17 @@
-# AWS Infrastructure using Terraform
+# AWS Infrastructure Using Terraform
 
 ## Overview
 
 This Terraform module provisions a secure AWS environment with the following components:
 
 - **VPC**: Isolated network environment
-- **Bastion Host**: EC2 instance in a public subnet that serves as a secure entry point
-  - Allows SSH (port 22) access only from your specified IP address
-  - Provides unrestricted outbound traffic
+- **Bastion Host**: EC2 instance in a public subnet for secure access
+  - Restricts SSH (port 22) access to your specified IP address
+  - Allows unrestricted outbound traffic
 - **Private Servers**: EC2 instances in a private subnet
-  - Configurable number of instances via the `instance_count` variable
-  - Accessible via SSH only through the bastion host
-  - Provides unrestricted outbound traffic
+  - Configurable via the `instance_count` variable
+  - Accessible only through the bastion host via SSH
+  - Allows unrestricted outbound traffic
 
 ## Prerequisites
 
@@ -26,13 +26,13 @@ This Terraform module provisions a secure AWS environment with the following com
 # Using HTTPS
 git clone https://github.com/ccrawford4/terraform-infra.git 
 
-# Or using SSH
+# Using SSH
 git clone git@github.com:ccrawford4/terraform-infra.git
-
 cd terraform-infra
 ```
 
-1A. checkout the `assignment10` branch:
+Switch to the required branch:
+
 ```bash
 git checkout assignment10
 ```
@@ -44,7 +44,6 @@ git checkout assignment10
 cp secrets.auto.tfvars.example secrets.auto.tfvars
 
 # Edit the file to add your IP address
-# Replace <your IP address> with your actual IP
 vi secrets.auto.tfvars
 
 # Set up AWS credentials
@@ -66,29 +65,31 @@ terraform apply
 
 ## Connecting to Ansible Manager Instance
 
-After deployment, you'll see output similar to:
-
-### Connect to Ansible Manager EC2
+After successful deployment, use the provided connection script:
 
 ```bash
-```
 ./connect.sh <bastion_host_public_ip> <private_key> <manager_private_ip>
-
-When prompted with `(yes/no/[fingerprint])?`, type `yes`. You should see:
-
-<insert image></insert>
-
-```bash
-source .venv/bin/activate
 ```
 
+When prompted with `(yes/no/[fingerprint])?`, type `yes`.
+
+Once connected to the manager instance:
+
+```bash
+# Activate virtual environment
+source .venv/bin/activate
+
+# Navigate to Ansible directory
 cd ansible
 
-Run the following command:
+# Run Ansible playbook
 ansible-playbook -i aws_ec2.yml playbook.yml --private-key <private_key>
+```
 
 ## Deprovisioning
-To remove AWS resources when finished, execute the following command
+
+To remove all AWS resources when finished:
+
 ```bash
 terraform destroy
 ```
