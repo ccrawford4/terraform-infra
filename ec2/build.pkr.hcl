@@ -92,6 +92,13 @@ build {
         "pip install boto3 botocore",
         "ansible-galaxy collection install amazon.aws",
 
+        # Set AWS credentials
+        "mkdir -p ~/.aws",
+        "echo '[default]' > ~/.aws/credentials",
+        "echo 'aws_access_key_id=${var.aws_access_key_id}' >> ~/.aws/credentials",
+        "echo 'aws_secret_access_key=${var.aws_secret_access_key}' >> ~/.aws/credentials",
+        "echo 'aws_session_token=${var.aws_session_token}' >> ~/.aws/credentials",
+
         # Add public key to authorized keys
         "cat /tmp/imported_key.pub >> ~/.ssh/authorized_keys",
         "chmod 700 ~/.ssh",
@@ -102,6 +109,21 @@ build {
 
 variable "aws_region" {
   type = string
+}
+
+variable "aws_access_key_id" {
+  type = string
+  sensitive = true
+}
+
+variable "aws_secret_access_key" {
+  type = string
+  sensitive = true
+}
+
+variable "aws_session_token" {
+  type = string
+  sensitive = true
 }
 
 variable "ami_name" {

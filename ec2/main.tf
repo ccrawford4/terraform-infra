@@ -148,9 +148,9 @@ resource "aws_instance" "bastion" {
   }
 }
 
-# Create the security group for the private EC2 instances 
-resource "aws_security_group" "private_ec2_sg" {
-  name = "private-ec2-sg"
+# Create the security group for the ansible manager private instance
+resource "aws_security_group" "private_ec2_manager_sg" {
+  name = "private-ec2-manager-sg"
   vpc_id = var.vpc_id
   
   # Inbound traffic from bastion host IP address only 
@@ -174,11 +174,33 @@ resource "aws_security_group" "private_ec2_sg" {
 resource "aws_instance" "private_ec2_amazon_ansible" { 
   ami = data.aws_ami.manager.id 
   instance_type = var.instance_type
-  vpc_security_group_ids = [aws_security_group.private_ec2_sg.id]
+  vpc_security_group_ids = [aws_security_group.private_ec2_manager_sg.id]
   subnet_id = var.private_subnet_id
 
   tags = {
     Name = "private-ec2-amazon-manager",
+  }
+}
+
+# Create the security group for the private worker instances 
+resource "aws_security_group" "private_ec2_sg" {
+  name = "private-ec2-sg"
+  vpc_id = var.vpc_id
+  
+  # Inbound traffic from bastion host IP address only 
+  ingress {
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    cidr_blocks = ["${aws_instance.private_ec2_amazon_ansible.private_ip}/32"]
+  }
+  
+  # Allow all outbound traffic
+  egress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 }
 
