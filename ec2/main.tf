@@ -50,9 +50,6 @@ resource "null_resource" "packer" {
     working_dir = path.module
     command     = <<EOT
 packer build \
--var "aws_access_key_id=${var.aws_access_key_id}" \
--var "aws_secret_access_key=${var.aws_secret_access_key}" \
--var "aws_session_token=${var.aws_session_token}" \
 -var "aws_region=${var.aws_region}" \
 -var "ami_name=${local.unique_ami_name}" \
 -var "instance_type=${var.instance_type}" \
@@ -128,7 +125,7 @@ data "aws_ami" "ubuntu" {
 
   filter {
     name = "name"
-    values = ["amazon-${var.ami_name}*"]
+    values = ["ubuntu-${var.ami_name}*"]
   }
 
   filter {
@@ -202,7 +199,7 @@ resource "aws_instance" "private_ec2_amazon" {
 # Create three private ubuntu instances
 resource "aws_instance" "private_ec2_ubuntu" {
   count = 3 
-  ami = data.aws_ami.manager.id 
+  ami = data.aws_ami.ubuntu.id 
   instance_type = var.instance_type
   vpc_security_group_ids = [aws_security_group.private_ec2_sg.id]
   subnet_id = var.private_subnet_id

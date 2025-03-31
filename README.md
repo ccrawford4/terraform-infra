@@ -45,7 +45,6 @@ cp secrets.auto.tfvars.example secrets.auto.tfvars
 
 # Edit the file to add your IP address
 # Replace <your IP address> with your actual IP
-# Replace <aws_access_key>, <aws_secret_access_key> and optionally <aws_session_token> with your actual AWS credentials
 vi secrets.auto.tfvars
 
 # Set up AWS credentials
