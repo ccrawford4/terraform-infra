@@ -45,7 +45,7 @@ resource "null_resource" "packer" {
     packer_file = sha1(file("${path.module}/build.pkr.hcl"))
     public_key = tls_private_key.ec2_ssh_key.public_key_openssh
   }
-  
+
   provisioner "local-exec" {
     working_dir = path.module
     command     = <<EOT
@@ -179,7 +179,8 @@ resource "aws_instance" "private_ec2_amazon_ansible" {
   instance_type = var.instance_type
   vpc_security_group_ids = [aws_security_group.private_ec2_manager_sg.id]
   subnet_id = var.private_subnet_id
-
+  key_name = aws_key_pair.generated_key.key_name
+  
   tags = {
     Name = "private-ec2-amazon-manager",
   }
@@ -214,6 +215,7 @@ resource "aws_instance" "private_ec2_amazon" {
   instance_type = var.instance_type
   vpc_security_group_ids = [aws_security_group.private_ec2_sg.id]
   subnet_id = var.private_subnet_id
+  key_name = aws_key_pair.generated_key.key_name
 
   tags = {
     Name = "private-ec2-amazon-${count.index + 1}",
@@ -228,7 +230,8 @@ resource "aws_instance" "private_ec2_ubuntu" {
   instance_type = var.instance_type
   vpc_security_group_ids = [aws_security_group.private_ec2_sg.id]
   subnet_id = var.private_subnet_id
-
+  key_name = aws_key_pair.generated_key.key_name
+  
   tags = {
     Name = "private-ec2-ubuntu-${count.index + 1}",
     OS = "ubuntu"
