@@ -43,8 +43,8 @@ git checkout assignment10
 # Create your configuration file from template
 cp secrets.auto.tfvars.example secrets.auto.tfvars
 
-# Edit the file to add your IP address
-vi secrets.auto.tfvars
+# Edit the file to add your IP address and AWS credentials
+vim secrets.auto.tfvars
 
 # Set up AWS credentials
 aws configure
