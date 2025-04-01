@@ -87,8 +87,7 @@ source .venv/bin/activate
 cd ansible
 
 # Run Ansible playbook
-# Note: use `--forks=1` if running a smaller machine with limited CPU
-ansible-playbook -i aws_ec2.yml playbook.yml --private-key <private_key> --forks=1
+ansible-playbook -i aws_ec2.yml playbook.yml --private-key <private_key>
 ```
 
 ## Deprovisioning
