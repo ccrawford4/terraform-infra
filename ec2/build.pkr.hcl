@@ -69,12 +69,17 @@ build {
       "sudo apt update -y",
       "sudo apt install -y docker-ce",
       "sudo usermod -aG docker ubuntu",
+      
+      # test this
+      "sudo add-apt-repository ppa:deadsnakes/ppa",
+      "sudo apt-get update",
+      "sudo apt-get install python3.11",
 
       # Install ansible
       "sudo apt install ansible -y",
       "sudo apt-get install -y python3-pip",
 
-       # Add public key to authorized keys
+      # Add public key to authorized keys
       "cat /tmp/imported_key.pub >> ~/.ssh/authorized_keys",
       "chmod 700 ~/.ssh",
       "rm /tmp/imported_key.pub"
