@@ -65,11 +65,11 @@
   become: yes
   vars:
     ansible_user: ubuntu
-    ansible_python_interpreter: "/usr/bin/python3.11"
-
   tasks:
     - name: Update apt cache
-      shell: apt update
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
     - name: Check for upgradable packages
       shell: apt list --upgradeable 2>/dev/null | grep -v 'Listing...' | wc -l
       register: upgradeable_count
@@ -79,7 +79,9 @@
         msg: "{{ upgradeable_count.stdout }} updates are available"
       when: upgradeable_count.stdout | int > 0
     - name: Update all packages to their latest version
-      shell: apt upgrade -y
+      apt:
+        name: '*'
+        state: latest
     - name: Ensure Docker Engine is Running
       systemd:
         name: docker
@@ -101,9 +103,13 @@
           - "Current Docker Version: {{ current_docker_version.stdout | default('Not installed') }}"
           - "Available Update Version: {{ available_docker_version.stdout | default('No updates') }}"
     - name: Update Docker packages
-      shell: |
-        apt-get update
-        apt-get install -y docker-ce docker-ce-cli containerd.io
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        state: latest
+        update_cache: yes
       when:
         - available_docker_version.stdout is defined
         - available_docker_version.stdout != ''
