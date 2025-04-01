@@ -65,7 +65,11 @@ terraform apply
 
 ## Connecting to Ansible Manager Instance
 
-After successful deployment, use the provided connection script:
+After successful deployment, you may see an output like so:
+
+<img width="682" alt="Screenshot 2025-03-31 at 10 42 15 PM" src="https://github.com/user-attachments/assets/2540849e-e4eb-4164-89c8-ee889328ca2b" />
+
+Copy the required outputs and use the provided connection script:
 
 ```bash
 ./connect.sh <bastion_host_public_ip> <private_key> <manager_private_ip>
