@@ -43,8 +43,8 @@ git checkout assignment10
 # Create your configuration file from template
 cp secrets.auto.tfvars.example secrets.auto.tfvars
 
-# Edit the file to add your IP address
-vi secrets.auto.tfvars
+# Edit the file to add your IP address and AWS credentials
+vim secrets.auto.tfvars
 
 # Set up AWS credentials
 aws configure
@@ -65,7 +65,11 @@ terraform apply
 
 ## Connecting to Ansible Manager Instance
 
-After successful deployment, use the provided connection script:
+After successful deployment, you may see an output like so:
+
+<img width="682" alt="Screenshot 2025-03-31 at 10 42 15 PM" src="https://github.com/user-attachments/assets/2540849e-e4eb-4164-89c8-ee889328ca2b" />
+
+Copy the required outputs and use the provided connection script:
 
 ```bash
 ./connect.sh <bastion_host_public_ip> <private_key> <manager_private_ip>
@@ -83,7 +87,7 @@ source .venv/bin/activate
 cd ansible
 
 # Run Ansible playbook
-Note: use `--forks=1` if running a smaller machine with limited CPU
+# Note: use `--forks=1` if running a smaller machine with limited CPU
 ansible-playbook -i aws_ec2.yml playbook.yml --private-key <private_key> --forks=1
 ```
 
